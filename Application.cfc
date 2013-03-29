@@ -4,7 +4,7 @@
 *
 */
 
-component output="false" {
+component {
 	setting enablecfoutputonly="yes";
 	
 	this.name = hash(getCurrentTemplatePath());
@@ -25,6 +25,20 @@ component output="false" {
 
 	if ( structKeyExists(url, "rebuild")){
 		this.ormSettings.dbCreate = "dropCreate";
+	}
+	if ( structKeyExists(url, "refresh")){
+		this.ormSettings.dbCreate = "update";
+	}
+
+	function onRequestStart(){
+
+		if( structKeyExists(url, "rebuild") 
+				|| structKeyExists(url, "refresh") ){
+			ORMReload();
+		}
+
+		return true;
+
 	}
 
 }
